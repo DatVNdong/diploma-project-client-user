@@ -1,4 +1,4 @@
-package springboot.centralizedsystem.resources;
+package springboot.centralizedsystem.user.resources;
 
 public class Configs {
 

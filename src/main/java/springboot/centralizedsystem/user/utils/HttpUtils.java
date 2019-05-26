@@ -1,4 +1,4 @@
-package springboot.centralizedsystem.utils;
+package springboot.centralizedsystem.user.utils;
 
 import java.util.Arrays;
 

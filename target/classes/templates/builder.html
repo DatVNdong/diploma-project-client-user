@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns= "http://www.w3.org/1999/xhtml"
+xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/css/formio.full.min.css" />
+    <link rel="stylesheet" href="/fonts/font-awesome.min.css" />
+    <link rel="stylesheet" href="/fonts/fontawesome-webfont.ttf" />
+    <link rel="stylesheet" href="/fonts/fontawesome-webfont.woff" />
+    <link rel="stylesheet" href="/fonts/fontawesome-webfont.woff2" />
+    <link rel="stylesheet" href="/fonts/glyphicons-halflings-regular.ttf" />
+    <link rel="stylesheet" href="/fonts/glyphicons-halflings-regular.woff" />
+    <link rel="stylesheet" href="/fonts/glyphicons-halflings-regular.woff2" />
+    
+    <script src="/js/formio.full.min.js"></script>    
+	<script src="/js/jquery.min.js"></script>
+</head>
+
+<body>
+	<div id="result-message" style="display: none; padding: 10px; font-size: 15px; border-radius: 4px; margin-bottom: 10px"></div>
+	
+	<form>
+	<div class="form-group">
+		<label for="title">Title</label>
+		<input type="text" class="form-control" id="title" placeholder="Enter the form title" required="required" />
+	</div>
+	<div class="form-group">
+		<label for="name">Name</label>
+		<input type="text" class="form-control" id="name" placeholder="Enter the form machine name" required="required" />
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group row">
+				<label class="col-sm-1 col-form-label">Path</label>
+				<div class="col-sm-11">
+					<input type="text" class="form-control" id="path" placeholder="example" style="text-transform: lsowercase" required="required" />
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="form-group row">
+				<label class="col-sm-1 col-form-label">Tags</label>
+				<div class="col-sm-11">
+					<input type="text" class="form-control" id="path" placeholder="Add a tag" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group row">
+				<label class="col-sm-4 col-form-label">Start date</label>
+				<div class="col-sm-8">
+					<input type="date" class="form-control" id="start-date" required="required" />
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group row">
+				<label class="col-sm-4 col-form-label">Start time</label>
+				<div class="col-sm-8">
+					<input type="time" class="form-control" id="start-time" required="required" />
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group row">
+				<label class="col-sm-4 col-form-label">Expired date</label>
+				<div class="col-sm-8">
+					<input type="date" class="form-control" id="expired-date" required="required" />
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group row">
+				<label class="col-sm-4 col-form-label">Expired time</label>
+				<div class="col-sm-8">
+					<input type="time" class="form-control" id="expired-time" required="required" />
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-2">
+			<div class="form-group row">
+				<label class="col-sm-3 col-form-label">Assign</label>
+				<div class="col-sm-9">
+					<select class="form-control" id="assign">
+						<option th:each="role : ${listRoles}" th:value="${role._id}" th:text="${role.title}"></option>
+						<option>Group</option>					
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-10">
+			<div class="form-group row">
+				<label class="col-sm-1 col-form-label">Details</label>
+				<div class="col-sm-11">
+					<select class="form-control" id="details" disabled="disabled">
+						<option>Test</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	</form>
+	
+	<div id="builder"></div>
+	<button type="button" class="btn btn-info mr-2" id="save" disabled="disabled">Save</button>
+    <button class="btn btn-warning">Cancel</button>
+    
+	<script th:inline="javascript">
+		const obj = JSON.parse([[${obj}]]);
+		const isCreate = [[${isCreate}]] === true;
+			
+		const form = document.querySelector('form');
+		const title = $('#title');
+		const name = $('#name');
+		const path = $('#path');
+		const startDate = $('#start-date');
+		const startTime = $('#start-time');
+		const expiredDate = $('#expired-date');
+		const expiredTime = $('#expired-time');
+		const assign = $('#assign');
+		const details = $('#details');
+		const saveBtn = $('#save');
+		const resultMess = $('#result-message');
+		
+		let builder = new Formio.FormBuilder(document.getElementById('builder'), {
+			display: 'form',
+			type: 'form',
+			tags: obj.tags,
+			owner: [[${session.boss.email}]],
+			title: obj.title,
+			path: obj.path,
+			name: obj.name,
+			components: obj.components,
+			assign: assign.val(),
+			startDate: obj.startDate,
+			startTime: obj.startTime,
+			expiredDate: obj.expiredDate,
+			expiredTime: obj.expiredTime
+		});
+		
+		if (!isCreate) {
+			saveBtn.removeAttr('disabled');
+		}
+		
+		const setDisplay = function(display) {
+			builder.setDisplay(display).then(function(instance) {     
+				instance.on('change', function(form) {
+					if (form.components) {
+						form.components.length !== 0 ? saveBtn.removeAttr('disabled') : saveBtn.attr('disabled', 'disabled');		
+					}
+				});
+			});
+		};
+		
+		setDisplay('form');
+		
+		// Set default value
+		title.val(obj.title);
+		name.val(obj.name);
+		path.val(obj.path);
+		// handle this error, tags 
+		// tags.val(obj.tags);
+		startDate.val(obj.startDate);
+		startTime.val(obj.startTime);
+		expiredDate.val(obj.expiredDate);
+		expiredTime.val(obj.expiredTime);
+		if (typeof obj.assign !== "undefined") {
+			assign.val(obj.assign);
+		}
+		
+		title.keyup(function () {
+			const titleValue = title.val();
+			builder.form.title = titleValue
+			
+			const nameValue = titleValue.toLowerCase().split(' ')
+						.map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join('')
+						.replace(/[^a-zA-Z0-9]/g, "");
+			
+			builder.form.name = nameValue;
+			name.val(nameValue);
+		});
+		
+		name.change(function () {
+			builder.form.name = name.val();
+		});
+		
+		path.change(function () {
+			builder.form.path = path.val();
+		});
+		
+		startDate.change(function () {
+			builder.form.startDate = startDate.val();
+		});
+		
+		startTime.change(function () {
+			builder.form.startTime = startTime.val() + ":00";
+		});
+		
+		expiredDate.change(function () {
+			builder.form.expiredDate = expiredDate.val();
+		});
+		
+		expiredTime.change(function () {
+			builder.form.expiredTime = expiredTime.val() + ":00";
+		});
+		
+		assign.change(function () {
+			const value = assign.val();
+			if (value == 'Group') {
+				details.removeAttr('disabled');
+			} else {
+				details.attr('disabled', 'disabled');
+				builder.form.assign = value;
+			}
+		});
+		
+		saveBtn.click(function () {
+			if (form.checkValidity()){
+				resultMess.removeClass();
+				$.ajax({
+					url: 'http://localhost:8080/build/form',
+					method: 'POST',
+	  				dataType: 'json',
+	  				data: {
+	  					formJSON: JSON.stringify(builder.form),
+	  					oldPath: obj.oldPath
+	  				},
+	  				success: () => {
+	  					resultMess.addClass('alert-success');
+	  					resultMess.html('Successfully ' + (isCreate ? 'created' : 'modified') + ' form!');
+	  				},
+	  				error: mess => {
+	  					resultMess.addClass('alert-danger');
+	  					resultMess.html('Could not connect to API server(' + mess.responseText + ')');
+					}
+				});
+				resultMess.show();
+			} else {
+				form.reportValidity();
+			}
+		});
+	</script>
+</body>
+
+</html>

@@ -1,61 +1,36 @@
 <div th:fragment="sidebar">
-	<!-- partial:partials/_sidebar.html -->
-	<nav class="sidebar sidebar-offcanvas" id="sidebar">
-		<ul class="nav">
-			<li class="nav-item nav-profile">
-				<div class="nav-link">
-					<div class="user-wrapper">
-						<div class="profile-image">
-							<img src="/images/faces/face1.jpg" alt="profile image" />
-						</div>
-						<div class="text-wrapper">
-							<p class="profile-name" th:text="${session.boss.name}"></p>
-							<div>
-								<small class="designation text-muted">Administrator</small>
-								<span class="status-indicator online"></span>
-							</div>
-						</div>
-					</div>
-					<a class="btn btn-success btn-block" th:href="@{/build/form}">New Form
-						<i class="mdi mdi-plus"></i>
-					</a>
-				</div>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" th:href="@{/dashboard}">
-					<i class="menu-icon mdi mdi-television"></i>
-					<span class="menu-title">Dashboard</span>
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-					<i class="menu-icon mdi mdi-account"></i>
-					<span class="menu-title">Users management</span>
-					<i class="menu-arrow"></i>
-				</a>
-				<div class="collapse" id="ui-basic">
-					<ul class="nav flex-column sub-menu">
-						<li class="nav-item">
-							<a class="nav-link" href="pages/ui-features/buttons.html">Employees</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="pages/ui-features/typography.html">Groups</a>
-						</li>
-					</ul>
-				</div>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" th:href="@{/forms}">
-					<i class="menu-icon mdi mdi-table"></i>
-					<span class="menu-title">Forms management</span>
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="pages/charts/chartjs.html">
-					<i class="menu-icon mdi mdi-chart-line"></i>
-					<span class="menu-title">Statistics</span>
-				</a>
-			</li>
-		</ul>
-	</nav>
+	<!-- Sidenav -->
+  	<nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white" id="sidenav-main">
+    	<div class="container-fluid">
+	      	<!-- Toggler -->
+	      	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
+	        	<span class="navbar-toggler-icon"></span>
+	      	</button>
+	      	<!-- Brand -->
+	      	<a class="navbar-brand pt-0" href="#">
+	        	<img src="/img/brand/blue.png" class="navbar-brand-img" alt="..." />
+	      	</a>
+	      	<!-- Collapse -->
+	      	<div class="collapse navbar-collapse" id="sidenav-collapse-main">
+	        	<!-- Navigation -->
+	        	<ul class="navbar-nav">
+	          		<li class="nav-item">
+	            		<a class="nav-link" th:href="@{/dashboard}">
+	              			<i class="ni ni-tv-2 text-primary"></i> Dashboard
+	            		</a>
+	          		</li>
+	          		<li class="nav-item">
+	            		<a class="nav-link" href="./examples/profile.html">
+	              			<i class="ni ni-single-02 text-yellow"></i> User profile
+	            		</a>
+	          		</li>
+	          		<li class="nav-item">
+	            		<a class="nav-link" href="./examples/tables.html">
+	              			<i class="ni ni-bullet-list-67 text-red"></i> Forms
+	            		</a>
+	          		</li>
+	        	</ul>
+	      	</div>
+    	</div>
+  	</nav>
 </div>

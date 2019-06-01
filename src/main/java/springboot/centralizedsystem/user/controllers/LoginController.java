@@ -49,7 +49,7 @@ public class LoginController {
             session.setAttribute(Keys.USER,
                     new User(email.split("@")[0], email, null, res.getHeaders().get(APIs.TOKEN_KEY).get(0)));
 
-            return "login-success";
+            return Views.DASHBOARD;
         } catch (HttpClientErrorException httpException) {
             redirect.addFlashAttribute(Keys.LOGIN, Messages.INVALID_ACCOUNT_ERROR);
             return "redirect:" + RequestsPath.LOGIN;
